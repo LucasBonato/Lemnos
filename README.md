@@ -98,6 +98,6 @@ Algumas das funcionalidades desse projeto são:
 ## 📞 Contato
 Este projeto foi desenvolvido por mim, Lucas Adriano, como parte do Trabalho de Conclusão de Curso (TCC) em Desenvolvimento de Sistemas. Entre em contato em caso de dúvidas ou sugestões.
 
-- **Email**: [lucasatdriano@gmail.com](mailto:lucasatdriano@gmail.com)
-- **LinkedIn**: [Lucas Adriano](https://linkedin.com/in/lucas-adriano-037003278/)
-- **Instagram**: [@__lgoncalves](https://instagram.com/__lgoncalves/)
+-   **Email**: [lucasadriano@gmail.com](mailto:lucasatdriano@gmail.com)
+-   **LinkedIn**: [Lucas Adriano](https://linkedin.com/in/lucasadrianodev)
+-   **Instagram**: [@__lgoncalves](https://instagram.com/__lgoncalves/)
