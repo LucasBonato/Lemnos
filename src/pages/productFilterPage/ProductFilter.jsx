@@ -271,12 +271,17 @@ export default function ProductFilter() {
         const newCategory = e.target.value;
         setSelectedCategory(newCategory);
         setPage(0);
+    
         const searchParams = new URLSearchParams(location.search);
         const searchTerm = searchParams.get('search') || '';
-        navigate(
-            `/productFilter/${newCategory}${searchTerm ? `?search=${searchTerm}` : ''}`
-        );
+    
+        setTimeout(() => {
+            navigate(
+                `/productFilter/${newCategory}${searchTerm ? `?search=${searchTerm}` : ''}`
+            );
+        }, 0);
     };
+    
 
     const handleProductRating = (rating) => {
         if (rating === selectedEvaluation) {
@@ -330,13 +335,10 @@ export default function ProductFilter() {
                     </p>
                 </div>
 
-                <select
-                    value={selectedCategory}
-                    onChange={handleCategoryChange}
-                >
+                <select value={selectedCategory} onChange={handleCategoryChange}>
                     <option value="">Todas as Categorias</option>
-                    {categorias.map((categoria, index) => (
-                        <option key={index} value={categoria}>
+                    {categorias.map((categoria) => (
+                        <option key={categoria} value={categoria}>
                             {categoria}
                         </option>
                     ))}
