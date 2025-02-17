@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-//import LogoVertical from '../../../../assets/imgLemnos/logoVerticalClaro.svg';
 import LogoHorizontal from '../../../../assets/imgLemnos/logoHorizontalClaro.svg';
 import './menuDep.scss';
 import { AiOutlineTeam } from 'react-icons/ai';
