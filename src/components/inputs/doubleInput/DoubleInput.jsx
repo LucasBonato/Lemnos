@@ -39,7 +39,7 @@ export default function DoubleInputRange({
         const value = parseInt(e.target.value, 10);
         if (!isNaN(value)) {
             setValues([value, values[1]]);
-            setMinValue(value); // Adicionado para sincronizar com o backend
+            setMinValue(value);
         }
     };
 
@@ -60,7 +60,7 @@ export default function DoubleInputRange({
         const value = parseInt(e.target.value, 10);
         if (!isNaN(value)) {
             setValues([values[0], value]);
-            setMaxValue(value); // Adicionado para sincronizar com o backend
+            setMaxValue(value);
         }
     };
 

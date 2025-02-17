@@ -14,23 +14,22 @@ import { BRANDS, CATEGORIES, SUBCATEGORIES} from '../../constants/filters';
 
 export default function ProductFilter() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const endOfPageRef = useRef();
+    const observer = useRef();
     const { category } = useParams();
     const [filteredData, setFilteredData] = useState([]);
     const [cardList, setCardList] = useState(AuthService.getCard() === 'true');
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(0);
-    const location = useLocation();
-    const searchParams = new URLSearchParams(location.search);
-    const search = searchParams.get('search') || '';
-    const endOfPageRef = useRef();
-    const observer = useRef();
-
+    const search = new URLSearchParams(location.search).get('search') || '';
+    
     const [filters, setFilters] = useState({
-        brand: localStorage.getItem('selectedBrand') || '',
-        evaluation: localStorage.getItem('selectedEvaluation') || '',
+        brand: localStorage.getItem('brand') || '',
+        evaluation: localStorage.getItem('evaluation') || '',
         category: localStorage.getItem('category') || category || '',
-        subCategory: localStorage.getItem('selectedSubCategory') || '',
+        subCategory: localStorage.getItem('subCategory') || '',
         minPrice: parseInt(localStorage.getItem('minPrice')) || 0,
         maxPrice: parseInt(localStorage.getItem('maxPrice')) || 50000,
         searchTerm: localStorage.getItem('searchTerm') || search || '',
@@ -39,13 +38,11 @@ export default function ProductFilter() {
     const [calculatedMaxPrice, setCalculatedMaxPrice] = useState(filters.maxPrice);
 
     const saveFiltersToLocalStorage = () => {
-        localStorage.setItem('selectedBrand', filters.brand);
-        localStorage.setItem('selectedEvaluation', filters.evaluation);
-        localStorage.setItem('category', filters.category);
-        localStorage.setItem('selectedSubCategory', filters.subCategory);
-        localStorage.setItem('minPrice', filters.minPrice.toString());
-        localStorage.setItem('maxPrice', filters.maxPrice.toString());
-        localStorage.setItem('searchTerm', filters.searchTerm);
+        Object.entries(filters).forEach(([key, value]) => localStorage.setItem(key, value.toString()));
+    };
+
+    const clearFiltersFromLocalStorage = () => {
+        Object.entries(filters).forEach(([key]) => localStorage.removeItem(key));
     };
 
     const calculateMaxPrice = async () => {
@@ -54,11 +51,11 @@ export default function ProductFilter() {
                 nome: filters.searchTerm ?? null,
                 categoria: filters.category ?? null,
                 subCategoria: filters.subCategory ?? null,
-                marca: filters.selectedBrand ?? null,
+                marca: filters.brand ?? null,
                 menorPreco: null,
                 maiorPreco: null,
-                avaliacao: filters.selectedEvaluation
-                    ? parseInt(filters.selectedEvaluation, 10)
+                avaliacao: filters.evaluation
+                    ? parseInt(filters.evaluation, 10)
                     : null,
             };
     
@@ -87,7 +84,7 @@ export default function ProductFilter() {
                 nome: filters.searchTerm ?? null,
                 categoria: filters.category ?? null,
                 subCategoria: filters.subCategory ?? null,
-                marca: filters.selectedBrand ?? null,
+                marca: filters.brand ?? null,
                 menorPreco: filters.minPrice ?? 0,
                 maiorPreco: filters.maxPrice ?? 50000,
                 avaliacao: filters.evaluation
@@ -95,20 +92,9 @@ export default function ProductFilter() {
                     : null,
             };
 
-            const produtosFiltrados = await listarProdutosFiltrados(
-                filtro,
-                pageToLoad,
-                24
-            );
+            const produtosFiltrados = await listarProdutosFiltrados(filtro, pageToLoad, 24);
 
-            if (pageToLoad === 0) {
-                setFilteredData(produtosFiltrados);
-            } else {
-                setFilteredData((prevData) => [
-                    ...prevData,
-                    ...produtosFiltrados,
-                ]);
-            }
+            setFilteredData(prevData => (pageToLoad === 0) ? produtosFiltrados : [...prevData, ...produtosFiltrados])
             setHasMore(produtosFiltrados.length === 24);
         } catch (error) {
             console.error('Erro ao aplicar filtros:', error);
@@ -130,13 +116,13 @@ export default function ProductFilter() {
     useEffect(() => {
         applyFilters(0);
     }, [
-        filters.selectedBrand,
+        filters.brand,
         filters.category,
-        filters.selectedSubCategory,
+        filters.subCategory,
         filters.minPrice,
         filters.maxPrice,
         filters.searchTerm,
-        filters.selectedEvaluation,
+        filters.evaluation,
     ]);
 
     useEffect(() => {
@@ -168,28 +154,26 @@ export default function ProductFilter() {
     const handleClearFilters = () => {
         setFilters(prev => ({
             ...prev,
-            selectedBrand: '',
-            selectedSubCategory: '',
-            setMinPrice: 0,
-            setMaxPrice: 50000,
-            selectedEvaluation: '',
+            brand: '',
+            subCategory: '',
+            minPrice: 0,
+            maxPrice: 50000,
+            evaluation: 0,
             searchTerm: '',
             category: ''
         }));
         setPage(0);
         setHasMore(true);
-        localStorage.clear();
+        clearFiltersFromLocalStorage();
         navigate(`/productFilter`);
     };
 
     const handleCategoryChange = (e) => {
         const newCategory = e.target.value;
         setFilters(prev => ({...prev, category: newCategory}));
-
         setPage(0);
-    
-        const searchParams = new URLSearchParams(location.search);
-        const searchTerm = searchParams.get('search') || '';
+        
+        const searchTerm = new URLSearchParams(location.search).get('search') || '';
     
         setTimeout(() => {
             navigate(
@@ -199,23 +183,13 @@ export default function ProductFilter() {
     };
 
     const handleProductRating = (rating) => {
-        if (rating === filters.selectedEvaluation) {
-            setFilters(prev => ({...prev, selectedEvaluation: ''}));
-        } else {
-            setFilters(prev => ({...prev, selectedEvaluation: rating}));
-        }
+        setFilters(prev => ({...prev, evaluation: (rating === prev.evaluation) ? '' : rating}));
         setPage(0);
     };
 
-    const handleAlterCardsList = () => {
-        setCardList(true);
-        AuthService.setCard('true');
-        applyFilters();
-    };
-
-    const handleAlterCardsSquare = () => {
-        setCardList(false);
-        AuthService.setCard('false');
+    const handleAlterCardsView = (bool) => {
+        setCardList(bool);
+        AuthService.setCard(bool);
         applyFilters();
     };
 
@@ -229,7 +203,7 @@ export default function ProductFilter() {
                             id="listView"
                             name="view"
                             checked={cardList}
-                            onChange={handleAlterCardsList}
+                            onChange={() => handleAlterCardsView(true)}
                         />
                         <label htmlFor="listView" className="labelIcon">
                             <IoList className="iconAlter" />
@@ -242,7 +216,7 @@ export default function ProductFilter() {
                             id="gridView"
                             name="view"
                             checked={!cardList}
-                            onChange={handleAlterCardsSquare}
+                            onChange={() => handleAlterCardsView(false)}
                         />
                         <label htmlFor="gridView" className="labelIcon">
                             <HiSquares2X2 className="iconAlter" />
@@ -250,30 +224,19 @@ export default function ProductFilter() {
                     </p>
                 </div>
 
-                <select
-                    value={filters.category}
-                    onChange={handleCategoryChange}
-                >
+                <select value={filters.category} onChange={handleCategoryChange}>
                     <option value="">Todas as Categorias</option>
-                    {CATEGORIES.map((categoria) => (
-                        <option key={categoria} value={categoria}>
-                            {categoria}
-                        </option>
-                    ))}
+                    {CATEGORIES.map((categoria) => (<option key={categoria} value={categoria}>{categoria}</option>))}
                 </select>
 
-                <select value={filters.selectedSubCategory} onChange={(e) => setFilters(prev => ({...prev, selectedSubCategory: e.target.value}))}>
+                <select value={filters.subCategory} onChange={(e) => setFilters(prev => ({...prev, subCategory: e.target.value}))}>
                     <option value="">Todas as SubCategorias</option>
-                    {SUBCATEGORIES[filters.category]?.map((subcategoria) => (
-                        <option key={subcategoria} value={subcategoria}>
-                            {subcategoria}
-                        </option>
-                    ))}
+                    {SUBCATEGORIES[filters.category]?.map((subcategoria) => (<option key={subcategoria} value={subcategoria}>{subcategoria}</option>))}
                 </select>
 
                 <select
-                    value={filters.selectedBrand}
-                    onChange={(e) => setFilters(prev => ({...prev, selectedBrand: e.target.value}))}
+                    value={filters.brand}
+                    onChange={(e) => setFilters(prev => ({...prev, brand: e.target.value}))}
                 >
                     <option value="">Todas as Marcas</option>
                     {BRANDS.map((brand) => (
@@ -300,7 +263,7 @@ export default function ProductFilter() {
                                 id={`star-${index}`}
                                 name="star-rating"
                                 value={index}
-                                checked={index === filters.selectedEvaluation}
+                                checked={index === filters.evaluation}
                                 onChange={() => handleProductRating(index)}
                             />
                             <label htmlFor={`star-${index}`}>
@@ -308,7 +271,7 @@ export default function ProductFilter() {
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     className={
-                                        index <= filters.selectedEvaluation
+                                        index <= filters.evaluation
                                             ? 'filled'
                                             : ''
                                     }
