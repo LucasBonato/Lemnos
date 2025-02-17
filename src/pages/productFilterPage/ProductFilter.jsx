@@ -4,183 +4,117 @@ import { IoList } from 'react-icons/io5';
 import { HiSquares2X2 } from 'react-icons/hi2';
 import { listarProdutosFiltrados } from '../../services/ProdutoService';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import Card from '../../components/card/Card';
-import Loading from '../../components/loading/Loading';
 import DoubleInputRange from '../../components/inputs/doubleInput/DoubleInput';
+import Loading from '../../components/loading/Loading';
 import AuthService from '../../services/AuthService';
+import Card from '../../components/card/Card';
 import './productFilter.scss';
 
-const brands = [
-    'Acer',
-    'AMD',
-    'Apple',
-    'Asus',
-    'Dell',
-    'Gigabyte',
-    'Logitech',
-    'Intel',
-    'JBL',
-    'Lenovo',
-    'LG',
-    'Microsoft',
-    'NVIDIA',
-    'Philips',
-    'Positivo',
-    'Samsung',
-    'Sony',
-    'Xiaomi',
+const BRANDS = [
+    'Acer', 'AMD', 'Apple', 'Asus', 'Dell', 'Gigabyte', 'Logitech', 'Intel',
+    'JBL', 'Lenovo', 'LG', 'Microsoft', 'NVIDIA', 'Philips', 'Positivo',
+    'Samsung', 'Sony', 'Xiaomi',
 ];
 
-const categorias = [
-    'Casa Inteligente',
-    'Computadores',
-    'Eletrônicos',
-    'Hardware',
-    'Kits',
-    'Monitores',
-    'Notebooks e Portáteis',
-    'Periféricos',
-    'Realidade Virtual',
-    'Redes e wireless',
-    'Video Games',
+const CATEGORIES = [
+    'Casa Inteligente', 'Computadores', 'Eletrônicos', 'Hardware', 'Kits', 'Monitores',
+    'Notebooks e Portáteis', 'Periféricos', 'Realidade Virtual', 'Redes e wireless', 'Video Games',
 ];
 
-const subcategoriasPorCategoria = {
-    'Casa Inteligente': [
-        'Assistente Virtual',
-        'Controles Smarts',
-        'Lâmpadas Inteligentes',
-        'Sensores',
-    ],
-    Computadores: ['Computadores Gamers', 'Computadores Workstation'],
-    Eletrônicos: [
-        'Acessórios de Console',
-        'Carregadores',
-        'Refrigeração',
-        'Smart Box',
-    ],
-    Hardware: [
-        'Armazenamento',
-        'Coolers',
-        'Fonte',
-        'Memória RAM',
-        'Placa de Vídeo',
-        'Placa Mãe',
-        'Processadores',
-    ],
-    Kits: ['Gamer', 'Periféricos', 'Upgrade'],
-    Monitores: ['Monitores Gamers', 'Monitores Workstation'],
+const SUBCATEGORIES = {
+    'Casa Inteligente': ['Assistente Virtual', 'Controles Smarts', 'Lâmpadas Inteligentes', 'Sensores'],
+    'Computadores': ['Computadores Gamers', 'Computadores Workstation'],
+    'Eletrônicos': ['Acessórios de Console', 'Carregadores', 'Refrigeração', 'Smart Box'],
+    'Hardware': ['Armazenamento', 'Coolers', 'Fonte', 'Memória RAM', 'Placa de Vídeo', 'Placa Mãe', 'Processadores'],
+    'Kits': ['Gamer', 'Periféricos', 'Upgrade'],
+    'Monitores': ['Monitores Gamers', 'Monitores Workstation'],
     'Notebooks e Portáteis': ['Notebooks', 'Smartphones', 'Tablets'],
-    Periféricos: [
-        'Caixa de Som',
-        'Fone de Ouvido',
-        'Microfone',
-        'Mouse',
-        'Mousepad',
-        'Teclado',
-    ],
+    'Periféricos': ['Caixa de Som', 'Fone de Ouvido', 'Microfone', 'Mouse', 'Mousepad', 'Teclado'],
     'Realidade Virtual': ['Óculos de VR', 'Periféricos de VR'],
-    'Redes e wireless': [
-        'Access Point',
-        'Adaptadores',
-        'Cabos',
-        'Cabos de Redes',
-        'Roteadores',
-        'Switches',
-    ],
+    'Redes e wireless': ['Access Point', 'Adaptadores', 'Cabos', 'Cabos de Redes', 'Roteadores', 'Switches'],
     'Video Games': ['Console de Mesa', 'Portátil'],
 };
 
 export default function ProductFilter() {
-    const { category } = useParams();
     const navigate = useNavigate();
+    const { category } = useParams();
+    const [filteredData, setFilteredData] = useState([]);
+    const [cardList, setCardList] = useState(AuthService.getCard() === 'true');
+    const [hasMore, setHasMore] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(0);
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const search = searchParams.get('search') || '';
-
-    const [selectedBrand, setSelectedBrand] = useState(
-        localStorage.getItem('selectedBrand') || ''
-    );
-    const [selectedEvaluation, setSelectedEvaluation] = useState(
-        localStorage.getItem('selectedEvaluation') || ''
-    );
-    const [selectedCategory, setSelectedCategory] = useState(
-        localStorage.getItem('selectedCategory') || category || ''
-    );
-    const [selectedSubCategory, setSelectedSubCategory] = useState(
-        localStorage.getItem('selectedSubCategory') || ''
-    );
-    const [minPrice, setMinPrice] = useState(
-        parseInt(localStorage.getItem('minPrice')) || 0
-    );
-    const [maxPrice, setMaxPrice] = useState(
-        parseInt(localStorage.getItem('maxPrice')) || 50000
-    );
-    const [searchTerm, setSearchTerm] = useState(
-        localStorage.getItem('searchTerm') || search || ''
-    );
-    const [filteredData, setFilteredData] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [cardList, setCardList] = useState(AuthService.getCard() === 'true');
-    const [page, setPage] = useState(0);
-    const [hasMore, setHasMore] = useState(true);
     const endOfPageRef = useRef();
     const observer = useRef();
 
+    const [filters, setFilters] = useState({
+        brand: localStorage.getItem('selectedBrand') || '',
+        evaluation: localStorage.getItem('selectedEvaluation') || '',
+        category: localStorage.getItem('category') || category || '',
+        subCategory: localStorage.getItem('selectedSubCategory') || '',
+        minPrice: parseInt(localStorage.getItem('minPrice')) || 0,
+        maxPrice: parseInt(localStorage.getItem('maxPrice')) || 50000,
+        searchTerm: localStorage.getItem('searchTerm') || search || '',
+    });
+
+    const [calculatedMaxPrice, setCalculatedMaxPrice] = useState(filters.maxPrice);
+
     const saveFiltersToLocalStorage = () => {
-        localStorage.setItem('selectedBrand', selectedBrand);
-        localStorage.setItem('selectedEvaluation', selectedEvaluation);
-        localStorage.setItem('selectedCategory', selectedCategory);
-        localStorage.setItem('selectedSubCategory', selectedSubCategory);
-        localStorage.setItem('minPrice', minPrice.toString());
-        localStorage.setItem('maxPrice', maxPrice.toString());
-        localStorage.setItem('searchTerm', searchTerm);
+        localStorage.setItem('selectedBrand', filters.brand);
+        localStorage.setItem('selectedEvaluation', filters.evaluation);
+        localStorage.setItem('category', filters.category);
+        localStorage.setItem('selectedSubCategory', filters.subCategory);
+        localStorage.setItem('minPrice', filters.minPrice.toString());
+        localStorage.setItem('maxPrice', filters.maxPrice.toString());
+        localStorage.setItem('searchTerm', filters.searchTerm);
     };
 
     const calculateMaxPrice = async () => {
         try {
             const filtro = {
-                nome: searchTerm ?? null,
-                categoria: selectedCategory ?? null,
-                subCategoria: selectedSubCategory ?? null,
-                marca: selectedBrand ?? null,
+                nome: filters.searchTerm ?? null,
+                categoria: filters.category ?? null,
+                subCategoria: filters.subCategory ?? null,
+                marca: filters.selectedBrand ?? null,
                 menorPreco: null,
                 maiorPreco: null,
-                avaliacao: selectedEvaluation
-                    ? parseInt(selectedEvaluation, 10)
+                avaliacao: filters.selectedEvaluation
+                    ? parseInt(filters.selectedEvaluation, 10)
                     : null,
             };
-
-            const produtosFiltrados = await listarProdutosFiltrados(
-                filtro,
-                0,
-                1000
-            );
-            const novoMaxPrice = produtosFiltrados.reduce((max, produto) => {
-                return produto.valorComDesconto > max
-                    ? produto.valorComDesconto
-                    : max;
-            }, 0);
-
-            setMaxPrice(novoMaxPrice);
+    
+            const produtosFiltrados = await listarProdutosFiltrados(filtro, 0, 1000);
+            
+            const novoMaxPrice = produtosFiltrados.reduce((max, produto) => 
+                produto.valorComDesconto > max ? produto.valorComDesconto : max
+            , 0);
+    
+            setCalculatedMaxPrice(novoMaxPrice);
+    
+            setFilters(prev => ({
+                ...prev,
+                maxPrice: novoMaxPrice
+            }));
         } catch (error) {
             console.error('Erro ao calcular o maior preço:', error);
         }
     };
-
+    
     const applyFilters = async (pageToLoad = 0) => {
         setLoading(true);
         saveFiltersToLocalStorage();
         try {
             const filtro = {
-                nome: searchTerm ?? null,
-                categoria: selectedCategory ?? null,
-                subCategoria: selectedSubCategory ?? null,
-                marca: selectedBrand ?? null,
-                menorPreco: minPrice ?? 0,
-                maiorPreco: maxPrice ?? 50000,
-                avaliacao: selectedEvaluation
-                    ? parseInt(selectedEvaluation, 10)
+                nome: filters.searchTerm ?? null,
+                categoria: filters.category ?? null,
+                subCategoria: filters.subCategory ?? null,
+                marca: filters.selectedBrand ?? null,
+                menorPreco: filters.minPrice ?? 0,
+                maiorPreco: filters.maxPrice ?? 50000,
+                avaliacao: filters.evaluation
+                    ? parseInt(filters.evaluation, 10)
                     : null,
             };
 
@@ -209,22 +143,23 @@ export default function ProductFilter() {
     useEffect(() => {
         calculateMaxPrice();
     }, [
-        selectedBrand,
-        selectedCategory,
-        selectedSubCategory,
-        searchTerm,
-        selectedEvaluation,
+        filters.selectedBrand,
+        filters.category,
+        filters.selectedSubCategory,
+        filters.searchTerm,
+        filters.selectedEvaluation,
     ]);
 
     useEffect(() => {
         applyFilters(0);
     }, [
-        selectedBrand,
-        selectedCategory,
-        selectedSubCategory,
-        minPrice,
-        searchTerm,
-        selectedEvaluation,
+        filters.selectedBrand,
+        filters.category,
+        filters.selectedSubCategory,
+        filters.minPrice,
+        filters.maxPrice,
+        filters.searchTerm,
+        filters.selectedEvaluation,
     ]);
 
     useEffect(() => {
@@ -254,13 +189,16 @@ export default function ProductFilter() {
     }, [page]);
 
     const handleClearFilters = () => {
-        setSelectedBrand('');
-        setSelectedSubCategory('');
-        setMinPrice(0);
-        setMaxPrice(50000);
-        setSelectedEvaluation('');
-        setSearchTerm('');
-        setSelectedCategory('');
+        setFilters(prev => ({
+            ...prev,
+            selectedBrand: '',
+            selectedSubCategory: '',
+            setMinPrice: 0,
+            setMaxPrice: 50000,
+            selectedEvaluation: '',
+            searchTerm: '',
+            category: ''
+        }));
         setPage(0);
         setHasMore(true);
         localStorage.clear();
@@ -269,7 +207,8 @@ export default function ProductFilter() {
 
     const handleCategoryChange = (e) => {
         const newCategory = e.target.value;
-        setSelectedCategory(newCategory);
+        setFilters(prev => ({...prev, category: newCategory}));
+
         setPage(0);
     
         const searchParams = new URLSearchParams(location.search);
@@ -281,13 +220,12 @@ export default function ProductFilter() {
             );
         }, 0);
     };
-    
 
     const handleProductRating = (rating) => {
-        if (rating === selectedEvaluation) {
-            setSelectedEvaluation('');
+        if (rating === filters.selectedEvaluation) {
+            setFilters(prev => ({...prev, selectedEvaluation: ''}));
         } else {
-            setSelectedEvaluation(rating);
+            setFilters(prev => ({...prev, selectedEvaluation: rating}));
         }
         setPage(0);
     };
@@ -335,47 +273,46 @@ export default function ProductFilter() {
                     </p>
                 </div>
 
-                <select value={selectedCategory} onChange={handleCategoryChange}>
+                <select
+                    value={filters.category}
+                    onChange={handleCategoryChange}
+                >
                     <option value="">Todas as Categorias</option>
-                    {categorias.map((categoria) => (
+                    {CATEGORIES.map((categoria) => (
                         <option key={categoria} value={categoria}>
                             {categoria}
                         </option>
                     ))}
                 </select>
 
-                <select
-                    value={selectedSubCategory}
-                    onChange={(e) => setSelectedSubCategory(e.target.value)}
-                >
+                <select value={filters.selectedSubCategory} onChange={(e) => setFilters(prev => ({...prev, selectedSubCategory: e.target.value}))}>
                     <option value="">Todas as SubCategorias</option>
-                    {(subcategoriasPorCategoria[selectedCategory] || []).map(
-                        (subcategoria, index) => (
-                            <option key={index} value={subcategoria}>
-                                {subcategoria}
-                            </option>
-                        )
-                    )}
+                    {SUBCATEGORIES[filters.category]?.map((subcategoria) => (
+                        <option key={subcategoria} value={subcategoria}>
+                            {subcategoria}
+                        </option>
+                    ))}
                 </select>
 
                 <select
-                    value={selectedBrand}
-                    onChange={(e) => setSelectedBrand(e.target.value)}
+                    value={filters.selectedBrand}
+                    onChange={(e) => setFilters(prev => ({...prev, selectedBrand: e.target.value}))}
                 >
                     <option value="">Todas as Marcas</option>
-                    {brands.map((brand, index) => (
-                        <option key={index} value={brand}>
+                    {BRANDS.map((brand) => (
+                        <option key={brand} value={brand}>
                             {brand}
                         </option>
                     ))}
                 </select>
 
                 <DoubleInputRange
-                    minValue={minPrice}
-                    maxValue={maxPrice}
-                    setMinValue={setMinPrice}
-                    setMaxValue={setMaxPrice}
-                    maxPrice={maxPrice}
+                    key={filters.maxPrice}
+                    minValue={filters.minPrice}
+                    maxValue={filters.maxPrice}
+                    setMinValue={(minPrice) => setFilters(prev => ({ ...prev, minPrice }))}
+                    setMaxValue={(maxPrice) => setFilters(prev => ({ ...prev, maxPrice }))}
+                    maxPrice={calculatedMaxPrice}
                 />
 
                 <div className="ratingFilter">
@@ -386,7 +323,7 @@ export default function ProductFilter() {
                                 id={`star-${index}`}
                                 name="star-rating"
                                 value={index}
-                                checked={index === selectedEvaluation}
+                                checked={index === filters.selectedEvaluation}
                                 onChange={() => handleProductRating(index)}
                             />
                             <label htmlFor={`star-${index}`}>
@@ -394,7 +331,7 @@ export default function ProductFilter() {
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     className={
-                                        index <= selectedEvaluation
+                                        index <= filters.selectedEvaluation
                                             ? 'filled'
                                             : ''
                                     }
