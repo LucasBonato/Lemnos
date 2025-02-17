@@ -140,7 +140,7 @@ export async function excluirEndereco(email, cep, entidade) {
             params: {
                 email: email,
                 cep: cep,
-                e: entidade,
+                e: entidade.replace("ROLE_", "").toLowerCase(),
             },
             timeout: 10000,
         });

@@ -60,7 +60,7 @@ export default function Product() {
             setProductRating(Math.ceil(product.avaliacao));
             if (
                 AuthService.isLoggedIn() &&
-                AuthService.getRole() == 'CLIENTE'
+                AuthService.isClienteRole()
             ) {
                 const favorites = await listarProdutosFavoritos();
                 const isFavorited = favorites.some(
@@ -120,7 +120,7 @@ export default function Product() {
     };
 
     const handleRemoveToFavorites = async () => {
-        if (AuthService.isLoggedIn() && AuthService.getRole() == 'CLIENTE') {
+        if (AuthService.isLoggedIn() && AuthService.isClienteRole()) {
             try {
                 await desfavoritarProduto(product);
                 toast.success('Produto removido dos favoritos');

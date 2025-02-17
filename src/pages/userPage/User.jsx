@@ -75,7 +75,7 @@ const User = ({ onLogout, userImg, setUserImg }) => {
     async function fetchUsuario() {
         setLoading(true);
         try {
-            const usuario = AuthService.getRole() === 'ROLE_CLIENTE'
+            const usuario = AuthService.isClienteRole()
                     ? await getCliente()
                     : await getFuncionarioByToken();
 
@@ -200,7 +200,7 @@ const User = ({ onLogout, userImg, setUserImg }) => {
             email: form.email,
         };
 
-        if (AuthService.getRole() === 'ROLE_CLIENTE') {
+        if (AuthService.isClienteRole()) {
             await updateCliente(usuario);
         } else {
             await updateFuncionario(usuario);
@@ -327,7 +327,7 @@ const User = ({ onLogout, userImg, setUserImg }) => {
 
             <hr className="hrSeparate" />
             <section>
-                {AuthService.getRole() === 'ROLE_CLIENTE' 
+                {AuthService.isClienteRole()
                 ? (
                 <div className="clientePage">
                         <div className="selectBtn">
@@ -415,7 +415,7 @@ const User = ({ onLogout, userImg, setUserImg }) => {
                         )}
                     </div>
                 ) 
-                : AuthService.getRole() === 'ROLE_ADMIN' 
+                : AuthService.isAdminRole() 
                     ? (
                     <div className="adminPage">
                         <hr className="hrFuncionario" />

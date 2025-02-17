@@ -32,7 +32,7 @@ export default function MenuFavorite({ onClose }) {
     }, []);
 
     const fetchFavorites = async () => {
-        if (AuthService.isLoggedIn() && AuthService.getRole() == 'CLIENTE') {
+        if (AuthService.isLoggedIn() && AuthService.isClienteRole()) {
             try {
                 const response = await listarProdutosFavoritos();
                 const favoritoDetalhado = await Promise.all(

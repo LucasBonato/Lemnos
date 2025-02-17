@@ -27,7 +27,7 @@ export default function Card({ produto }) {
         const setInfo = async () => {
             if (
                 AuthService.isLoggedIn() &&
-                AuthService.getRole() == 'CLIENTE'
+                AuthService.isClienteRole()
             ) {
                 try {
                     const favorites = await listarProdutosFavoritos();
@@ -68,7 +68,7 @@ export default function Card({ produto }) {
         e.preventDefault();
         e.stopPropagation();
         if (AuthService.isLoggedIn()) {
-            if (AuthService.getRole() == 'CLIENTE') {
+            if (AuthService.isClienteRole()) {
                 try {
                     await adicionarFavorito(produto);
                     setIsFavorite(true);
@@ -92,7 +92,7 @@ export default function Card({ produto }) {
     const handleRemoveFavorite = async (produto, e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (AuthService.isLoggedIn() && AuthService.getRole() == 'CLIENTE') {
+        if (AuthService.isLoggedIn() && AuthService.isClienteRole()) {
             try {
                 const success = await desfavoritarProduto(produto);
                 if (success) {
