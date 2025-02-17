@@ -61,9 +61,13 @@ export async function listarProdutosComDesconto() {
             error.response.data &&
             error.response.data.error
         ) {
-            toast.error(error.response.data.error);
+            toast.error(error.response.data.error, {
+                position: "bottom-right"
+            });
         } else {
-            toast.error('Erro ao listar produtos.');
+            toast.error('Erro ao listar produtos.', {
+                position: "bottom-right"
+            });
         }
         throw error;
     }

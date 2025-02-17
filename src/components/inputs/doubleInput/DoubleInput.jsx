@@ -46,10 +46,14 @@ export default function DoubleInputRange({
     const handleMinInputBlur = () => {
         let [minVal, maxVal] = values;
         if (isNaN(minVal) || minVal < MIN) {
-            toast.warning('O valor mínimo não pode ser menor que 0.');
+            toast.warning('O valor mínimo não pode ser menor que 0.', {
+                position: "bottom-right"
+            });
             minVal = MIN;
         } else if (minVal > maxVal) {
-            toast.warning('O valor mínimo não pode ser maior que o valor máximo.');
+            toast.warning('O valor mínimo não pode ser maior que o valor máximo.', {
+                position: "bottom-right"
+            });
             minVal = maxVal;
         }
         setMinValue(minVal);
@@ -67,10 +71,14 @@ export default function DoubleInputRange({
     const handleMaxInputBlur = () => {
         let [minVal, maxVal] = values;
         if (isNaN(maxVal) || maxVal > maxPrice) {
-            toast.warning(`O valor máximo não pode ser maior que ${BRL.format(maxPrice)}.`);
+            toast.warning(`O valor máximo não pode ser maior que ${BRL.format(maxPrice)}.`, {
+                position: "bottom-right"
+            });
             maxVal = maxPrice;
         } else if (maxVal < minVal) {
-            toast.warning('O valor máximo não pode ser menor que o valor mínimo.');
+            toast.warning('O valor máximo não pode ser menor que o valor mínimo.', {
+                position: "bottom-right"
+            });
             maxVal = minVal;
         }
         setMaxValue(maxVal);

@@ -207,7 +207,9 @@ const User = ({ onLogout, userImg, setUserImg }) => {
         }
 
         setIsEditing(!isEditing);
-        toast.success('Dados atualizados!');
+        toast.success('Dados atualizados!', {
+            position: "bottom-right"
+        });
     };
 
     const handleSelectEndereco = (index, cep) => {
@@ -224,7 +226,9 @@ const User = ({ onLogout, userImg, setUserImg }) => {
 
     const handleDeleteEndereco = async () => {
         if (selectedEndereco === null) {
-            toast.warn('Nenhum endereço selecionado.');
+            toast.warn('Nenhum endereço selecionado.', {
+                position: "bottom-right"
+            });
             return;
         }
 
@@ -252,10 +256,14 @@ const User = ({ onLogout, userImg, setUserImg }) => {
                 setSelectedCep(null);
                 setIsEnderecoSelected(false);
 
-                toast.success('Endereço apagado!');
+                toast.success('Endereço apagado!', {
+                    position: "bottom-right"
+                });
             }
         } catch (error) {
-            toast.error('Erro ao apagar o endereço.');
+            toast.error('Erro ao apagar o endereço.', {
+                position: "bottom-right"
+            });
             console.error('Erro ao apagar o endereço', error);
         }
     };

@@ -73,7 +73,9 @@ export default function Product() {
                 setIsFavorite(isFavorited);
             }
         } catch (error) {
-            toast.error('Erro ao setar as informações do produto');
+            toast.error('Erro ao setar as informações do produto', {
+                position: "bottom-right"
+            });
         } finally {
             setLoading(false);
         }
@@ -87,13 +89,17 @@ export default function Product() {
         if (AuthService.isLoggedIn()) {
             try {
                 await adicionarProdutoCarrinho(product, 1);
-                toast.success('Produto adicionado ao carrinho!');
+                toast.success('Produto adicionado ao carrinho!', {
+                    position: "bottom-right"
+                });
             } catch (error) {
                 console.error('Erro ao adicionar produto ao carrinho:', error);
             }
         } else {
             toast.warning(
-                'Você precisa estar logado para adicionar produtos ao carrinho.'
+                'Você precisa estar logado para adicionar produtos ao carrinho.', {
+                    position: "bottom-right"
+                }
             );
             navigate('/login');
         }
@@ -103,7 +109,9 @@ export default function Product() {
         if (AuthService.isLoggedIn()) {
             try {
                 await adicionarFavorito(product);
-                toast.success('Produto adicionado aos favoritos!');
+                toast.success('Produto adicionado aos favoritos!', {
+                    position: "bottom-right"
+                });
                 setIsFavorite(true);
             } catch (error) {
                 console.error(
@@ -113,7 +121,9 @@ export default function Product() {
             }
         } else {
             toast.warning(
-                'Você precisa estar logado para adicionar produtos aos favoritos.'
+                'Você precisa estar logado para adicionar produtos aos favoritos.', {
+                    position: "bottom-right"
+                }
             );
             navigate('/login');
         }
@@ -123,14 +133,18 @@ export default function Product() {
         if (AuthService.isLoggedIn() && AuthService.isClienteRole()) {
             try {
                 await desfavoritarProduto(product);
-                toast.success('Produto removido dos favoritos');
+                toast.success('Produto removido dos favoritos', {
+                    position: "bottom-right"
+                });
                 setIsFavorite(false);
             } catch (error) {
                 console.error('Erro ao remover produto dos favoritos:', error);
             }
         } else {
             toast.warning(
-                'Você precisa estar logado para remover produtos dos favoritos.'
+                'Você precisa estar logado para remover produtos dos favoritos.', {
+                    position: "bottom-right"
+                }
             );
             navigate('/login');
         }
@@ -140,14 +154,20 @@ export default function Product() {
         if (AuthService.isLoggedIn()) {
             try {
                 await avaliarProduto(product, rating);
-                toast.success('Produto avaliado!');
+                toast.success('Produto avaliado!', {
+                    position: "bottom-right"
+                });
                 setProductRating(rating);
             } catch (error) {
                 console.error('Erro ao avaliar o produto:', error);
-                toast.error('Erro ao avaliar o produto');
+                toast.error('Erro ao avaliar o produto', {
+                    position: "bottom-right"
+                });
             }
         } else {
-            toast.warning('Você precisa estar logado para avaliar produtos.');
+            toast.warning('Você precisa estar logado para avaliar produtos.', {
+                position: "bottom-right"
+            });
             navigate('/login');
         }
     };

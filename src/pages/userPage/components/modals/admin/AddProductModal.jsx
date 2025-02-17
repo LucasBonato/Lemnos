@@ -191,7 +191,9 @@ export default function ProdutoModal({ onClose }) {
             setIsProdutoListOpen(false);
         } catch (error) {
             console.error('Erro ao carregar dados do produto:', error);
-            toast.error('Erro ao carregar dados do produto.');
+            toast.error('Erro ao carregar dados do produto.', {
+                position: "bottom-right"
+            });
             throw error;
         }
     };
@@ -281,7 +283,9 @@ export default function ProdutoModal({ onClose }) {
                 };
                 await cadastrarProduto(formattedForm);
 
-                toast.success('Produto cadastrado');
+                toast.success('Produto cadastrado', {
+                    position: "bottom-right"
+                });
                 setForm(initialFormState);
             } catch (error) {
                 console.error(error);
@@ -314,20 +318,26 @@ export default function ProdutoModal({ onClose }) {
                     );
 
                     if (entidadeAtualizada === true) {
-                        toast.success('Produto atualizado.');
+                        toast.success('Produto atualizado.', {
+                            position: "bottom-right"
+                        });
                         setSelectedProduct(null);
                         setForm(initialFormState);
                         return;
                     }
                 } catch (error) {
                     console.error('Erro ao atualizar produto:', error);
-                    toast.error(error.response.data.message);
+                    toast.error(error.response.data.message, {
+                        position: "bottom-right"
+                    });
                     throw error;
                 }
             }
         } catch (error) {
             console.error('Erro na requisição de produto:', error);
-            toast.error('Erro ao buscar produto.');
+            toast.error('Erro ao buscar produto.', {
+                position: "bottom-right"
+            });
         }
     };
 
