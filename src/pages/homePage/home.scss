@@ -20,6 +20,14 @@ $font-items: 'Poppins', Helvetica;
 
 main {
     font-family: $font-title;
+    
+    h2.subTitle {
+        font-size: xx-large;
+        padding-left: 1%;
+        font-family: "Audiowide", serif;
+        font-weight: 400;
+        font-style: normal;
+    }
 
     .mainDep {
         margin: 1em auto;
@@ -75,11 +83,12 @@ main {
         margin: 0 auto;
         height: auto;
         padding-top: 1em;
+        width: 75%;
 
         .productsList {
             display: grid;
             place-items: center;
-            grid-template-columns: repeat(6, minmax(100px, 1fr));
+            grid-template-columns: repeat(4, minmax(100px, 1fr));
             grid-template-rows: 1fr 1fr;
             gap: 1.3em;
             height: auto;
@@ -161,7 +170,7 @@ main {
     main {
         .mainProds {
             .productsList {
-                grid-template-columns: repeat(4, minmax(100px, 1fr));
+                grid-template-columns: repeat(3, minmax(100px, 1fr));
                 flex-wrap: wrap;
             }
         }
@@ -177,7 +186,7 @@ main {
     main {
         .mainProds {
             .productsList {
-                grid-template-columns: repeat(3, minmax(100px, 1fr));
+                grid-template-columns: repeat(2, minmax(100px, 1fr));
             }
         }
         .brands {
@@ -217,7 +226,7 @@ main {
         }
         .mainProds {
             .productsList {
-                grid-template-columns: repeat(2, minmax(100px, 1fr));
+                grid-template-columns: repeat(1, minmax(100px, 1fr));
             }
         }
         .brands {
@@ -228,7 +237,7 @@ main {
     }
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 900px) {
     main {
         .mainDep {
             .containerDeps {
