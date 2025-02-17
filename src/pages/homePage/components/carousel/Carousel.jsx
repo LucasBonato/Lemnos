@@ -54,7 +54,7 @@ export default function Slide() {
         pauseOnHover: false,
         speed: 1000,
         rewind: true,
-        gap: 15,
+        gap: 1,
     });
 
     const nextSlide = () => {
