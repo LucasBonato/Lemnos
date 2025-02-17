@@ -134,10 +134,8 @@ $font-items: 'Poppins', Helvetica;
     .funcionarioPage {
         height: 100%;
         display: flex;
-        justify-content: center;
         align-items: center;
         flex-direction: column;
-        padding: 1em;
         gap: 2em;
 
         .hrFuncionario {
@@ -156,7 +154,7 @@ $font-items: 'Poppins', Helvetica;
             max-width: 50%;
             min-width: 50%;
             box-shadow: none;
-            font-size: 2.6rem;
+            font-size: 3.3rem;
             padding: 0.5em;
             border-radius: 0;
 
