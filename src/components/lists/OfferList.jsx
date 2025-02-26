@@ -31,11 +31,11 @@ export default function OfferList() {
                 <Splide
                     options={{
                         type: 'loop',
-                        perPage: 6,
+                        perPage: 7,
                         perMove: 1,
                         speed: 1000,
                         arrows: true,
-                        gap: 350,
+                        gap: 307,
                         breakpoints: {
                             1300: {
                                 perPage: 5,

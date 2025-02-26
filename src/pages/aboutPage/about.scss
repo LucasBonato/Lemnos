@@ -26,7 +26,7 @@ main {
 
             h2 {
                 font-family: $font-title;
-                font-size: 4rem;
+                font-size: 5rem;
                 padding: 0 10px;
             }
 
@@ -76,6 +76,10 @@ main {
             flex-wrap: wrap;
 
             .item {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
                 background-color: $color-secundaryLight;
                 color: $color-fontDark;
                 width: 28vw;
@@ -90,12 +94,13 @@ main {
 
                 h3 {
                     font-family: $font-title;
-                    font-size: 2.6rem;
+                    font-size: 3rem;
                     text-align: center;
                 }
 
                 p {
                     text-wrap: balance;
+                    margin: auto 0;
                     font-size: 2.4rem;
                     max-height: 11em;
                     scrollbar-color: $color-secundaryLight;

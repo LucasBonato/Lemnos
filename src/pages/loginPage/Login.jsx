@@ -36,7 +36,9 @@ export default function Login() {
             () => {
                 handleLogout();
                 toast.warning(
-                    'Sessão expirada. Por Favor, Cadastre-se novamente!'
+                    'Sessão expirada. Por Favor, Cadastre-se novamente!', {
+                        position: "bottom-right"
+                    }
                 );
             },
             10 * 60 * 1000
@@ -87,10 +89,14 @@ export default function Login() {
 
         try {
             await cadastrarUsuario(formattedForm);
-            toast.success(`Cadastro realizado, ${firstName}!!`);
+            toast.success(`Cadastro realizado, ${firstName}!!`, {
+                position: "bottom-right"
+            });
             handleBackToLogin();
         } catch (error) {
-            toast.error(`${error.message}`);
+            toast.error(`${error.message}`, {
+                position: "bottom-right"
+            });
         }
     };
 

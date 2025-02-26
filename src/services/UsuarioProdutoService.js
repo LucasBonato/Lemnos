@@ -45,7 +45,7 @@ export async function listarProdutosFavoritos() {
         const response = await axios({
             baseURL: baseUri,
             method: 'GET',
-            url: `/produto/fav`,
+            url: `/favorito`,
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
                 'Authorization': AuthService.getToken(),
@@ -74,7 +74,7 @@ export async function adicionarFavorito(produto) {
             const response = await axios({
                 baseURL: baseUri,
                 method: 'POST',
-                url: '/produto/fav',
+                url: '/favorito',
                 headers: {
                     'Content-Type': 'application/json; charset=UTF-8',
                     'Authorization': AuthService.getToken(),
@@ -102,7 +102,7 @@ export async function desfavoritarProduto(produto) {
         const response = await axios({
             baseURL: baseUri,
             method: 'DELETE',
-            url: '/produto/fav',
+            url: '/favorito',
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
                 'Authorization': AuthService.getToken(),

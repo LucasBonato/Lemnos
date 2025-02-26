@@ -1,6 +1,7 @@
 import axios from 'axios';
 import AuthService from './AuthService';
 import { baseUri } from './configurations/ServiceConfig';
+import { toast } from 'react-toastify';
 
 export async function listarProdutosFiltrados(filtro, page, size) {
     try {
@@ -8,6 +9,7 @@ export async function listarProdutosFiltrados(filtro, page, size) {
             baseURL: baseUri,
             method: 'POST',
             url: '/produto/find',
+            withCredentials: true,
             data: {
                 nome: filtro.nome,
                 categoria: filtro.categoria,
@@ -59,9 +61,13 @@ export async function listarProdutosComDesconto() {
             error.response.data &&
             error.response.data.error
         ) {
-            toast.error(error.response.data.error);
+            toast.error(error.response.data.error, {
+                position: "bottom-right"
+            });
         } else {
-            toast.error('Erro ao listar produtos.');
+            toast.error('Erro ao listar produtos.', {
+                position: "bottom-right"
+            });
         }
         throw error;
     }
@@ -75,7 +81,7 @@ export async function cadastrarProduto(produto) {
             url: '/produto',
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
-                Authorization: AuthService.getToken(),
+                'Authorization': AuthService.getToken(),
             },
             data: {
                 nome: produto.nome,
@@ -115,7 +121,7 @@ export async function updateProduto(produto, id) {
             url: `/produto/${id}`,
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
-                Authorization: AuthService.getToken(),
+                'Authorization': AuthService.getToken(),
             },
             data: {
                 nome: produto.nome,

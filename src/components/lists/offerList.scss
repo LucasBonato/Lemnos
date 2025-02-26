@@ -21,7 +21,7 @@ $font-web: 'Roboto Flex', Arial;
 $font-items: 'Poppins', Helvetica;
 
 .offers {
-    width: 90%;
+    width: 100%;
     margin: 0 auto;
     padding-top: 0.5em;
 
@@ -33,7 +33,7 @@ $font-items: 'Poppins', Helvetica;
 
         .splide__list {
             margin: auto;
-            width: 87.5vw;
+            width: 95vw;
         }
 
         .splide__slide {
@@ -55,13 +55,6 @@ $font-items: 'Poppins', Helvetica;
                 &:hover {
                     opacity: 0.8;
                 }
-            }
-
-            &.splide__arrow--prev {
-                left: -3em;
-            }
-            &.splide__arrow--next {
-                right: -3em;
             }
         }
 

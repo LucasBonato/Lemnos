@@ -101,9 +101,6 @@ export default function Header({ toggleTheme }) {
 
                 <nav>
                     <ul className="navegation">
-                        <Link to="/" className="link">
-                            Home
-                        </Link>
                         <Link to="/about" className="link">
                             Sobre
                         </Link>
