@@ -21,7 +21,7 @@ export async function listarProdutosFiltrados(filtro, page, size) {
                 page: page,
                 size: size,
             },
-            timeout: 10000,
+            timeout: 100000,
         });
 
         if (response.status !== 200 && response.status !== 204) {
@@ -47,7 +47,7 @@ export async function listarProdutosComDesconto() {
             baseURL: baseUri,
             method: 'GET',
             url: '/produto/desconto',
-            timeout: 10000,
+            timeout: 100000,
         });
 
         if (response.status !== 200 && response.status !== 204) {
@@ -81,7 +81,7 @@ export async function cadastrarProduto(produto) {
             url: '/produto',
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
-                'Authorization': AuthService.getToken(),
+                Authorization: AuthService.getToken(),
             },
             data: {
                 nome: produto.nome,
@@ -100,7 +100,7 @@ export async function cadastrarProduto(produto) {
                 fabricante: produto.fabricante,
                 fornecedor: produto.fornecedor,
             },
-            timeout: 10000,
+            timeout: 100000,
         });
 
         if (response.status != 201) {
@@ -155,7 +155,7 @@ export async function getProdutoById(id) {
         const response = await axios({
             baseURL: baseUri,
             url: `/produto/${id}`,
-            timeout: 10000,
+            timeout: 100000,
         });
         return response.data;
     } catch (error) {
